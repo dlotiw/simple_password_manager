@@ -46,7 +46,7 @@ def add_click():
     else:
         d.loc[0 if pd.isnull(d.index.max()) else d.index.max() + 1] = [web_e.get(),user_e.get(),pass_e.get()]
         d.to_csv("passwords.csv",index=False)
-        print(d)
+        
 
 
     
