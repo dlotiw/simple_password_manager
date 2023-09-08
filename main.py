@@ -1,11 +1,12 @@
 from tkinter import *
-import pandas
+import pandas as pd
 import random
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def password_generator(length=22):
     length = size.get()
     password = ""
     for _ in range(length):
+        #m - small letter, d-large letters, l - numbers, z - special_chars
         what = random.choice(['d','z','m','l'])
         if what == 'm':
             password += chr(random.randint(97,122))
@@ -16,18 +17,40 @@ def password_generator(length=22):
         else:
             password += str(random.randint(0,9))
     return password
-    #65-90 Duze
-    #97-122 male
     
 def gen_click():
     password = password_generator()
     pass_e.focus()
     pass_e.delete(0,"end")
     pass_e.insert(0, password)
-    # pass_e.insert(END, string=password)
+
     
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
+def add_click():
+    try:
+        d = pd.read_csv("passwords.csv")
+    except:
+        d = {
+            'website': [],
+            'username/email':[],
+            'passwords': []
+        }
+    
+    if type(d) == dict:
+        d['website'].append(web_e.get())
+        d['username/email'].append(user_e.get())
+        d['passwords'].append(pass_e.get())
+        df = pd.DataFrame.from_dict(data=d)
+        df.to_csv("passwords.csv",index=False)
+    else:
+        d.loc[0 if pd.isnull(d.index.max()) else d.index.max() + 1] = [web_e.get(),user_e.get(),pass_e.get()]
+        d.to_csv("passwords.csv",index=False)
+        print(d)
+
+
+    
+    
 
 # ---------------------------- UI SETUP ------------------------------- #
 
@@ -63,7 +86,7 @@ pass_e.grid(row=3,column=1,columnspan=1,sticky="w",padx=8,pady=10)
 #Button
 gen_buton = Button(text="Generate password",command=gen_click)
 gen_buton.grid(row=3,column=2,sticky="e")
-add_button = Button(text="Add",width=50)
+add_button = Button(text="Add",width=50,command=add_click)
 add_button.grid(row=5,column=1,columnspan=2)
 
 #Scale
