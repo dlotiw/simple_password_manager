@@ -1,5 +1,9 @@
 from tkinter import *
+import pandas
+import random
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
+
+    
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 
@@ -23,19 +27,24 @@ user_l = Label(text="Email/Username")
 user_l.grid(row=2,column=0)
 pass_l = Label(text="Password")
 pass_l.grid(row=3,column=0)
+num_l = Label(text="Password Length")
+num_l.grid(row=4,column=0)
 
 #TextEntry
 web_e = Entry(width=58)
 web_e.grid(row=1,column=1,columnspan=2,sticky="e",pady=10)
 user_e = Entry(width=58)
 user_e.grid(row=2,column=1,columnspan=2,sticky="e",pady=10)
-pass_e = Entry(width=32)
+pass_e = Entry(width=35)
 pass_e.grid(row=3,column=1,columnspan=1,sticky="w",padx=8,pady=10)
 
 #Button
-gen_buton = Button(text="Generate password")
+gen_buton = Button(text="Generate password",command=gen_click)
 gen_buton.grid(row=3,column=2,sticky="e")
 add_button = Button(text="Add",width=50)
-add_button.grid(row=4,column=1,columnspan=2)
+add_button.grid(row=5,column=1,columnspan=2)
 
+#Scale
+size = Scale(from_=10, to=35,orient="horizontal")
+size.grid(row=4,column=1,columnspan=2,pady=(0,10))
 window.mainloop()
