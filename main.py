@@ -2,7 +2,29 @@ from tkinter import *
 import pandas
 import random
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
-
+def password_generator(length=22):
+    length = size.get()
+    password = ""
+    for _ in range(length):
+        what = random.choice(['d','z','m','l'])
+        if what == 'm':
+            password += chr(random.randint(97,122))
+        elif what == 'd':
+            password += chr(random.randint(65,90))
+        elif what == 'z':
+            password += random.choice(['?','!','_',",",'*'])
+        else:
+            password += str(random.randint(0,9))
+    return password
+    #65-90 Duze
+    #97-122 male
+    
+def gen_click():
+    password = password_generator()
+    pass_e.focus()
+    pass_e.delete(0,"end")
+    pass_e.insert(0, password)
+    # pass_e.insert(END, string=password)
     
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
