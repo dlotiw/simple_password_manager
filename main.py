@@ -1,6 +1,9 @@
 from tkinter import *
+from tkinter import messagebox
 import pandas as pd
 import random
+from cryptography.fernet import Fernet
+
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def password_generator(length=22):
     length = size.get()
@@ -17,7 +20,7 @@ def password_generator(length=22):
         else:
             password += str(random.randint(0,9))
     return password
-    
+#TODO copy to clipboard using pyperclip
 def gen_click():
     password = password_generator()
     pass_e.focus()
@@ -27,10 +30,11 @@ def gen_click():
     
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
+#TODO Add popup, empty field validation
 def add_click():
     try:
         d = pd.read_csv("passwords.csv")
-    except:
+    except FileNotFoundError:
         d = {
             'website': [],
             'username/email':[],
@@ -43,17 +47,45 @@ def add_click():
         d['passwords'].append(pass_e.get())
         df = pd.DataFrame.from_dict(data=d)
         df.to_csv("passwords.csv",index=False)
+        
     else:
         d.loc[0 if pd.isnull(d.index.max()) else d.index.max() + 1] = [web_e.get(),user_e.get(),pass_e.get()]
         d.to_csv("passwords.csv",index=False)
+        print(d)
+        
         
 
+#------------------------------Ecryption-------------------------------------------#
+#TODO repair decryption
+def encrypt(file):
+    with open('crypt+key.key','r') as filekey:
+        key = filekey.read()
+    fernet = Fernet(key)
+    with open(file,'r') as filet:
+        org = filet.read()
+    enc=fernet.encrypt(org)
+    with open(file,'w') as enc_file:
+        enc_file.write(enc)
 
+def decrypt(file):
+    with open('crypt+key.key','r') as filekey:
+        key = filekey.read()
+    fernet = Fernet(key)
+    with open(file,'r') as filet:
+        dec = filet.read()
+    org=fernet.decrypt(dec)
+    with open(file,'w') as org_file:
+        org_file.write(org)
     
-    
+def on_closing():
+    if messagebox.askokcancel("Quit", "Do you want to quit?"):
+            encrypt('passwords.csv')
+            window.destroy()
+      
 
 # ---------------------------- UI SETUP ------------------------------- #
 
+#TODO a way to view all stored passwords
 #Screen setup
 window = Tk()
 window.title("Simple Password Manager")
@@ -92,4 +124,5 @@ add_button.grid(row=5,column=1,columnspan=2)
 #Scale
 size = Scale(from_=10, to=35,orient="horizontal")
 size.grid(row=4,column=1,columnspan=2,pady=(0,10))
+window.protocol("WM_DELETE_WINDOW", on_closing)
 window.mainloop()
